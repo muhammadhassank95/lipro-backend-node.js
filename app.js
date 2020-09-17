@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Routes
+require('./startup/db')();
 require('./startup/routes')(app);
 
 // catch 404 and forward to error handler
