@@ -13,11 +13,11 @@ const Invoice = mongoose.model('invoices', new mongoose.Schema({
     comment: {
         type: String,
     },
-    // projectid: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'countries',
-    //     required: false
-    // },
+    projectid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'projects',
+        required: false
+    },
     date: {
         type: Date,
     },

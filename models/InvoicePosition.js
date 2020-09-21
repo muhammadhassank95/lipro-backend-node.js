@@ -18,6 +18,11 @@ const InvoicePosition = mongoose.model('invoicepositions', new mongoose.Schema({
         ref: 'invoices',
         required: false
     },
+    functionid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'functions',
+        required: false
+    },
 }));
 
 exports.InvoicePosition = InvoicePosition;

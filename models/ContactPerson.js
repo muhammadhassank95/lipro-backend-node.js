@@ -34,8 +34,11 @@ const ContactPerson = mongoose.model('contactpersons', new mongoose.Schema({
         type: String,
         maxlength: 20
     },
-
-    //  customerId
+    customerid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'customers',
+        required: false
+    },
 }));
 
 exports.ContactPerson = ContactPerson;

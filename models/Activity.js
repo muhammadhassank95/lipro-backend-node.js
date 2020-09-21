@@ -15,7 +15,10 @@ const Activity = mongoose.model('activities', new mongoose.Schema({
         type: String,
         maxlength: 40
     },
-
-    //  projectID
+    projectid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'projects',
+        required: false
+    },
 }));
 exports.Activity = Activity;

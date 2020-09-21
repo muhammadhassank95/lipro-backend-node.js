@@ -4,12 +4,12 @@ const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const ConsultantCost = mongoose.model('consultantcosts', new mongoose.Schema({
-    // dailyrate: {
-    //     type: Decimal,
-    // },
-    // report: {
-    //     type: Blob,
-    // },
+    dailyrate: {
+        type: Number,
+    },
+    costsid: {
+        type: Number,
+    },
     month: {
         type: Date
     },

@@ -4,7 +4,6 @@ const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const LeadPlan = mongoose.model('leadplans', new mongoose.Schema({
-
     addcosts: {
         type: Number
     },

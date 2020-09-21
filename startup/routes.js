@@ -23,6 +23,7 @@ const projectYear = require('../routes/projectYear');
 const publicHoliday = require('../routes/publicHoliday');
 const system = require('../routes/system');
 const theme = require('../routes/theme');
+const userCategory = require('../routes/userCategory');
 const auth = require('../routes/auth');
 
 
@@ -52,6 +53,6 @@ module.exports = function (app) {
         app.use('/api/publicHoliday', publicHoliday),
         app.use('/api/system', system),
         app.use('/api/theme', theme),
-        // app.use('/api/planMonth', planMonth),
+        app.use('/api/userCategory', userCategory),
         app.use('/api/auth', auth)
 };

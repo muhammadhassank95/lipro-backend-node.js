@@ -14,16 +14,16 @@ const AccessRights = mongoose.model('accessRights', new mongoose.Schema({
         type: Number,
         required: true,
     },
-    // categoryid: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'categories',
-    //     required: false
-    // },
-    // userid: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'users',
-    //     required: false
-    // },
+    categoryid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'categories',
+        required: false
+    },
+    userid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: false
+    },
 }));
 
 exports.AccessRights = AccessRights;
