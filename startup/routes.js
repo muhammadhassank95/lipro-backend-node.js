@@ -16,6 +16,13 @@ const leadplan = require('../routes/leadplan');
 const offer = require('../routes/offer');
 const planMonth = require('../routes/planMonth');
 const project = require('../routes/project');
+const projectFunction = require('../routes/projectFunction');
+const projectConsultant = require('../routes/projectConsultant');
+const projectTime = require('../routes/projectTime');
+const projectYear = require('../routes/projectYear');
+const publicHoliday = require('../routes/publicHoliday');
+const system = require('../routes/system');
+const theme = require('../routes/theme');
 const auth = require('../routes/auth');
 
 
@@ -38,7 +45,13 @@ module.exports = function (app) {
         app.use('/api/offer', offer),
         app.use('/api/leadplan', leadplan),
         app.use('/api/project', project),
-        app.use('/api/planMonth', planMonth),
-
+        app.use('/api/projectConsultant', projectConsultant),
+        app.use('/api/projectFunction', projectFunction),
+        app.use('/api/projectTime', projectTime),
+        app.use('/api/projectYear', projectYear),
+        app.use('/api/publicHoliday', publicHoliday),
+        app.use('/api/system', system),
+        app.use('/api/theme', theme),
+        // app.use('/api/planMonth', planMonth),
         app.use('/api/auth', auth)
 };
