@@ -15,6 +15,7 @@ const lead = require('../routes/lead');
 const leadplan = require('../routes/leadplan');
 const offer = require('../routes/offer');
 const planMonth = require('../routes/planMonth');
+const project = require('../routes/project');
 const auth = require('../routes/auth');
 
 
@@ -36,6 +37,7 @@ module.exports = function (app) {
         app.use('/api/lead', lead),
         app.use('/api/offer', offer),
         app.use('/api/leadplan', leadplan),
+        app.use('/api/project', project),
         app.use('/api/planMonth', planMonth),
 
         app.use('/api/auth', auth)
