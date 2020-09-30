@@ -26,4 +26,11 @@ const AccessRights = mongoose.model('accessRights', new mongoose.Schema({
     },
 }));
 
+// function validateAccessRight(accessRight) {
+//     const schema = {
+//         right: Joi.number().min(0).max(3).required(),
+//         rightno: Joi.number().required(),
+//     }
+// }
+
 exports.AccessRights = AccessRights;

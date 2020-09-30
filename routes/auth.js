@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models/User');
+const { User, validate } = require('../models/User');
 const { Auth } = require('../models/Auth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -17,16 +17,16 @@ router.post('/login', async (req, res, next) => {
 
     const user = await User.findById(auth.userid);
     if (!user) return res.status(404).send("The user data is missing");
-    const data = { user, loginname }
+    const data = { user, loginname, status: true }
 
     const token = jwt.sign({ data }, 'jwtPrivateKey');
-    return res.header('x-auth-token', token).send(data);
+    return res.status(200).header('x-auth-token', token).send({ ...data, token });
 });
 
 /* Sign up  */
 router.post('/signup', async (req, res, next) => {
-    // const { error } = validate(req.body);
-    // if (error) return res.status(403).send(error.details[0]);
+    const { error } = validate(req.body);
+    if (error) return res.status(403).send(error.details[0]);
 
     try {
         const { loginname, password, firstname, lastname, active, city, mail, startdate, enddate, street, zipcode, salutation } = req.body;
@@ -52,6 +52,7 @@ router.post('/signup', async (req, res, next) => {
         let data = { user, loginname }
 
         const token = jwt.sign({ data }, 'jwtPrivateKey');
+
         res.status(200).header('x-auth-token', token).send(data);
     } catch (e) {
         return res.status(400).send("Something went wrong");

@@ -4,8 +4,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const app = express();
 const cors = require('cors');
-
-app.use(cors());
+const corsOption = {
+  exposedHeaders: 'x-auth-token'
+};
+app.use(cors(corsOption));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -2,7 +2,7 @@ const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
 const { AccessRights } = require('../models/AccessRights');
-
+// const { isUser } = require('../middlewares/authMiddlewares')
 router.post('/', async (req, res, next) => {
     try {
         const access = AccessRights({
