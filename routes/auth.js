@@ -5,6 +5,16 @@ const { Auth } = require('../models/Auth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
+router.get('/users', async (req, res, next) => {
+    try {
+        let user_list = await User.find();
+        return res.status(200).send(user_list);
+    } catch (e) {
+        return e;
+    }
+});
+
 /* Log in */
 router.post('/login', async (req, res, next) => {
     const { loginname, password } = req.body;
@@ -28,8 +38,30 @@ router.post('/signup', async (req, res, next) => {
     const { error } = validate(req.body);
     if (error) return res.status(403).send(error.details[0]);
 
+
+
+
     try {
-        const { loginname, password, firstname, lastname, active, city, mail, startdate, enddate, street, zipcode, salutation } = req.body;
+        const { mail,
+            firstname,
+            lastname,
+            salutation,
+            title,
+            active,
+            startdate,
+            enddate,
+            loginname,
+            categoryid,
+            consultantfunctionid,
+            countryid,
+            street,
+            zipcode,
+            city,
+            changeright,
+            isfirstlogin,
+            fullname,
+            password,
+        } = req.body;
         let hashedPassword;
 
         let user = await User.findOne({ mail });
@@ -43,7 +75,26 @@ router.post('/signup', async (req, res, next) => {
 
         if (!hashedPassword) return res.status(400).send("Could not hash the password");
 
-        user = new User({ firstname, lastname, active, city, mail, startdate, enddate, street, zipcode, salutation });
+        user = new User({
+            mail,
+            firstname,
+            lastname,
+            salutation,
+            title,
+            active,
+            startdate,
+            enddate,
+            loginname,
+            categoryid,
+            consultantfunctionid,
+            countryid,
+            street,
+            zipcode,
+            city,
+            changeright,
+            isfirstlogin,
+            fullname
+        });
         await user.save();
 
         auth = new Auth({ loginname, password: hashedPassword, userid: user._id });

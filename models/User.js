@@ -17,6 +17,10 @@ const User = mongoose.model('users', new mongoose.Schema({
         type: String,
         maxlength: 60
     },
+    loginname: {
+        type: String,
+        maxlength: 60
+    },
     lastname: {
         type: String,
         maxlength: 60
@@ -35,6 +39,9 @@ const User = mongoose.model('users', new mongoose.Schema({
         type: String,
         maxlength: 60
     },
+    // abbreviation: {
+    //     type: String,
+    // },
     title: {
         type: String,
         maxlength: 20
@@ -48,9 +55,26 @@ const User = mongoose.model('users', new mongoose.Schema({
         min: 1,
         max: 2,
     },
+    daclarationagreed: {
+        type: Date,
+    },
+    changeright: {
+        type: Boolean,
+    },
+    isfirstlogin: {
+        type: Boolean,
+    },
+    fullname: {
+        type: String,
+    },
     categoryid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'categories',
+        required: false
+    },
+    consultantfunctionid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'consultantfunctions',
         required: false
     },
     countryid: {
@@ -63,21 +87,26 @@ const User = mongoose.model('users', new mongoose.Schema({
 function validateUser(user) {
     const schema = {
         firstname: Joi.string().min(2).max(60).required(),
-        lastName: Joi.string().min(2).max(60).required(),
-        loginname: Joi.string().min(2).max(20).required(),
-        active: Joi.number().min(0).max(1).required(),
-        salutation: Joi.number().min(1).max(2).required(),
-        city: Joi.string().min(2).max(100).required(),
+        lastname: Joi.string().min(2).max(60).required(),
+        loginname: Joi.string().min(2).max(20),
+        active: Joi.number().min(0).max(1),
+        salutation: Joi.number().min(1).max(2),
+        city: Joi.string().min(2).max(100),
         password: Joi.string().min(5).max(60).required(),
-        street: Joi.string().min(0).max(60).required(),
+        street: Joi.string().min(0).max(60),
         mail: Joi.string().regex(/^(([^<>()\[\]\\.,;:\s@“]+(\.[^<>()\[\]\\.,;:\s@“]+)*)|(“.+“))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).required(),
-        startdate: Joi.date().required(),
-        enddate: Joi.date().required(),
-        title: Joi.string().min(2).max(20).required(),
-        zipcode: Joi.string().min(2).max(20).required(),
+        startdate: Joi.date(),
+        enddate: Joi.date(),
+        title: Joi.string().min(2).max(20),
+        zipcode: Joi.string().min(2).max(20),
         categoryid: Joi.objectId().required(),
-        countryid: Joi.objectId().required(),
+        consultantfunctionid: Joi.objectId(),
+        countryid: Joi.objectId(),
         _id: Joi.objectId(),
+        daclarationagreed: Joi.date(),
+        changeright: Joi.bool(),
+        isfirstlogin: Joi.bool(),
+        fullname: Joi.string().min(2).max(60).required(),
     };
 
     return Joi.validate(user, schema);

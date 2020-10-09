@@ -10,4 +10,14 @@ const Country = mongoose.model('countries', new mongoose.Schema({
     },
 }));
 
+function validateCountry(country) {
+    const schema = {
+        country: Joi.string().min(2).max(60).required(),
+        _id: Joi.objectId(),
+    };
+
+    return Joi.validate(country, schema);
+}
+
 exports.Country = Country;
+exports.validate = validateCountry;
