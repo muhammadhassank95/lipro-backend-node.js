@@ -38,9 +38,6 @@ router.post('/signup', async (req, res, next) => {
     const { error } = validate(req.body);
     if (error) return res.status(403).send(error.details[0]);
 
-
-
-
     try {
         const { mail,
             firstname,
@@ -53,13 +50,9 @@ router.post('/signup', async (req, res, next) => {
             loginname,
             categoryid,
             consultantfunctionid,
-            countryid,
             street,
             zipcode,
             city,
-            changeright,
-            isfirstlogin,
-            fullname,
             password,
         } = req.body;
         let hashedPassword;
@@ -87,13 +80,9 @@ router.post('/signup', async (req, res, next) => {
             loginname,
             categoryid,
             consultantfunctionid,
-            countryid,
             street,
             zipcode,
             city,
-            changeright,
-            isfirstlogin,
-            fullname
         });
         await user.save();
 
@@ -110,6 +99,68 @@ router.post('/signup', async (req, res, next) => {
     }
 });
 
+/*UPDATE User */
+router.put('/update-user/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { mail,
+            firstname,
+            lastname,
+            salutation,
+            title,
+            active,
+            startdate,
+            enddate,
+            loginname,
+            categoryid,
+            consultantfunctionid,
+            street,
+            zipcode,
+            city,
+        } = req.body;
+        const { error } = validate(req.body);
+
+        if (error) return res.status(400).send(error.details[0]);
+
+        let _user = await User.findById(id);
+        if (!_user) return res.status(404).send("No User found");
+
+        let c = await User.find({ mail: mail });
+        if (c.length) return res.status(409).send({ message: "User with this name already exists" });
+
+        _user = await User.findByIdAndUpdate(id, {
+            firstname: firstname,
+            lastname: lastname,
+            salutation: salutation,
+            title: title,
+            active: active,
+            startdate: startdate,
+            enddate: enddate,
+            loginname: loginname,
+            categoryid: categoryid,
+            consultantfunctionid: consultantfunctionid,
+            street: street,
+            zipcode: zipcode,
+            city: city
+        }, { new: true });
+        return res.send(_user);
+    } catch (e) {
+        return res.status(400).send("Something went wrong ");
+    }
+});
+
+router.delete('/delete-user/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findByIdAndRemove(id);
+        if (!user) return res.status(400).send({ message: "User do not exists" });
+        return res.status(204).send('User Deleted');
+    } catch (e) {
+        console.log(e);
+        return res.status(400).send({ message: 'Something went wrong' });
+    }
+});
 // router.post('/resetusername', async (req, res, next) => {
 // 	const { _id ,username } = req.body;
 

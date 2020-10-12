@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Country, validate } = require('../models/Country');
 
+/* Get Country*/
 router.get('/', async (req, res, next) => {
     try {
         let country_list = await Country.find();
@@ -11,32 +12,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-
-/*UPDATE ITEM */
-// router.put('/update-country', async (req, res, next) => {
-//     const { _id, country } = req.body;
-//     const { error } = validate(req.body);
-//     if (error) return res.status(400).send(error.details[0]);
-
-//     try {
-//         // let item = await MenuItem.findById(_id);
-//         let country = await Country.findById(_id);
-
-//         if (!country) return res.status(404).send("No item found");
-
-//         // if (item.name !== name) {
-//         //     item = await MenuItem.findOne({ name });
-//         //     if (item) return res.status(409).send("The item with this name already exists");
-//         // }
-
-//         country = await Country.findByIdAndUpdate(_id, { country }, { new: true });
-//         return res.send(country);
-//     } catch (e) {
-//         return res.status(400).send("Something went wrong ");
-//     }
-// });
-
-
+/* Create New Country */
 router.post('/add-new-country', async (req, res, next) => {
     try {
         const { error } = validate(req.body);
@@ -52,4 +28,50 @@ router.post('/add-new-country', async (req, res, next) => {
     }
 });
 
+/*UPDATE Country */
+router.put('/update-country/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { country } = req.body;
+        const { error } = validate(req.body);
+        if (error) return res.status(400).send(error.details[0]);
+        // let item = await MenuItem.findById(_id);
+        let _country = await Country.findById(id);
+        if (!_country) return res.status(404).send("No item found");
+
+        let c = await Country.find({ country: country });
+        if (c.length) return res.status(409).send({ message: "Name with this country already exists" });
+
+        _country = await Country.findByIdAndUpdate(id, { country }, { new: true });
+        return res.send(_country);
+    } catch (e) {
+        return res.status(400).send("Something went wrong ");
+    }
+});
+
+
+/* Delete Country*/
+router.delete('/delete-country/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const country = await Country.findByIdAndRemove(id);
+        if (!country) return res.status(400).send({ message: "Country do not exists" });
+        return res.status(204).send('CountryDeleted');
+    } catch (e) {
+        console.log(e);
+        return res.status(400).send({ message: 'Something went wrong' });
+    }
+});
+
+/* Search Country*/
+router.get('/search-country/:query', async (req, res, next) => {
+
+    try {
+        const country = await Country.fuzzySearch({ query: req.params.query });
+        return res.status(200).send(country);
+    } catch (e) {
+        return res.status(500).send(e.message);
+    }
+});
 module.exports = router;

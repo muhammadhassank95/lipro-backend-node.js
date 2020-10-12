@@ -5,10 +5,8 @@ Joi.objectId = require('joi-objectid')(Joi);
 
 const User = mongoose.model('users', new mongoose.Schema({
     active: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 1,
+        type: Boolean,
+        default: true,
     },
     city: {
         type: String,
@@ -55,18 +53,6 @@ const User = mongoose.model('users', new mongoose.Schema({
         min: 1,
         max: 2,
     },
-    daclarationagreed: {
-        type: Date,
-    },
-    changeright: {
-        type: Boolean,
-    },
-    isfirstlogin: {
-        type: Boolean,
-    },
-    fullname: {
-        type: String,
-    },
     categoryid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'categories',
@@ -89,7 +75,7 @@ function validateUser(user) {
         firstname: Joi.string().min(2).max(60).required(),
         lastname: Joi.string().min(2).max(60).required(),
         loginname: Joi.string().min(2).max(20),
-        active: Joi.number().min(0).max(1),
+        active: Joi.bool(),
         salutation: Joi.number().min(1).max(2),
         city: Joi.string().min(2).max(100),
         password: Joi.string().min(5).max(60).required(),
@@ -103,10 +89,6 @@ function validateUser(user) {
         consultantfunctionid: Joi.objectId(),
         countryid: Joi.objectId(),
         _id: Joi.objectId(),
-        daclarationagreed: Joi.date(),
-        changeright: Joi.bool(),
-        isfirstlogin: Joi.bool(),
-        fullname: Joi.string().min(2).max(60).required(),
     };
 
     return Joi.validate(user, schema);
