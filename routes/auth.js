@@ -9,6 +9,22 @@ const jwt = require('jsonwebtoken');
 router.get('/users', async (req, res, next) => {
     try {
         let user_list = await User.find();
+
+        user_list.sort(function(a, b) {
+            var nameA = a.loginname.toUpperCase();
+            var nameB = b.loginname.toUpperCase();
+
+            if (nameA < nameB) {
+              return -1;
+            }
+
+            if (nameA > nameB) {
+              return 1;
+            }
+
+            return 0;
+        });
+
         return res.status(200).send(user_list);
     } catch (e) {
         return e;
@@ -157,7 +173,6 @@ router.delete('/delete-user/:id', async (req, res, next) => {
         if (!user) return res.status(400).send({ message: "User do not exists" });
         return res.status(204).send('User Deleted');
     } catch (e) {
-        console.log(e);
         return res.status(400).send({ message: 'Something went wrong' });
     }
 });

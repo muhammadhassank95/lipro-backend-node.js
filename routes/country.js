@@ -6,6 +6,22 @@ const { Country, validate } = require('../models/Country');
 router.get('/', async (req, res, next) => {
     try {
         let country_list = await Country.find();
+
+        country_list.sort(function(a, b) {
+            var nameA = a.country.toUpperCase();
+            var nameB = b.country.toUpperCase();
+
+            if (nameA < nameB) {
+              return -1;
+            }
+
+            if (nameA > nameB) {
+              return 1;
+            }
+
+            return 0;
+        });
+
         return res.status(200).send(country_list);
     } catch (e) {
         return e;
@@ -59,7 +75,6 @@ router.delete('/delete-country/:id', async (req, res, next) => {
         if (!country) return res.status(400).send({ message: "Country do not exists" });
         return res.status(204).send('CountryDeleted');
     } catch (e) {
-        console.log(e);
         return res.status(400).send({ message: 'Something went wrong' });
     }
 });

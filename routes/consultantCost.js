@@ -11,7 +11,6 @@ router.post('/', async (req, res, next) => {
         return res.status(201).send('consultantCost Added Successfully');
     }
     catch (e) {
-        console.log(e);
         return e;
     }
 });
