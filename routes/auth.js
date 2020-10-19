@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-router.get('/users', async (req, res, next) => {
+router.get('/users', async(req, res, next) => {
     try {
         let user_list = await User.find();
 
@@ -15,11 +15,11 @@ router.get('/users', async (req, res, next) => {
             var nameB = b.loginname.toUpperCase();
 
             if (nameA < nameB) {
-              return -1;
+                return -1;
             }
 
             if (nameA > nameB) {
-              return 1;
+                return 1;
             }
 
             return 0;
@@ -32,7 +32,7 @@ router.get('/users', async (req, res, next) => {
 });
 
 /* Log in */
-router.post('/login', async (req, res, next) => {
+router.post('/login', async(req, res, next) => {
     const { loginname, password } = req.body;
 
     const auth = await Auth.findOne({ loginname });
@@ -46,16 +46,17 @@ router.post('/login', async (req, res, next) => {
     const data = { user, loginname, status: true }
 
     const token = jwt.sign({ data }, 'jwtPrivateKey');
-    return res.status(200).header('x-auth-token', token).send({ ...data, token });
+    return res.status(200).header('x-auth-token', token).send({...data, token });
 });
 
 /* Sign up  */
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', async(req, res, next) => {
     const { error } = validate(req.body);
     if (error) return res.status(403).send(error.details[0]);
 
     try {
-        const { mail,
+        const {
+            mail,
             firstname,
             lastname,
             salutation,
@@ -116,10 +117,11 @@ router.post('/signup', async (req, res, next) => {
 });
 
 /*UPDATE User */
-router.put('/update-user/:id', async (req, res, next) => {
+router.put('/update-user/:id', async(req, res, next) => {
     try {
         const { id } = req.params;
-        const { mail,
+        const {
+            mail,
             firstname,
             lastname,
             salutation,
@@ -141,8 +143,10 @@ router.put('/update-user/:id', async (req, res, next) => {
         let _user = await User.findById(id);
         if (!_user) return res.status(404).send("No User found");
 
-        let c = await User.find({ mail: mail });
-        if (c.length) return res.status(409).send({ message: "User with this name already exists" });
+        if (_user.mail != mail) {
+            let c = await User.find({ mail: mail });
+            if (c.length) return res.status(409).send({ message: "User with this name already exists" });
+        }
 
         _user = await User.findByIdAndUpdate(id, {
             firstname: firstname,
@@ -165,7 +169,7 @@ router.put('/update-user/:id', async (req, res, next) => {
     }
 });
 
-router.delete('/delete-user/:id', async (req, res, next) => {
+router.delete('/delete-user/:id', async(req, res, next) => {
     try {
         const { id } = req.params;
 
