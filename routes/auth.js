@@ -135,6 +135,7 @@ router.put('/update-user/:id', async(req, res, next) => {
             street,
             zipcode,
             city,
+            password
         } = req.body;
         const { error } = validate(req.body);
 
@@ -147,6 +148,11 @@ router.put('/update-user/:id', async(req, res, next) => {
             let c = await User.find({ mail: mail });
             if (c.length) return res.status(409).send({ message: "User with this name already exists" });
         }
+
+        const salt = await bcrypt.genSalt(10);
+        hashedPassword = await bcrypt.hash(password, salt);
+
+        if (!hashedPassword) return res.status(400).send("Could not hash the password");
 
         _user = await User.findByIdAndUpdate(id, {
             firstname: firstname,
@@ -163,6 +169,11 @@ router.put('/update-user/:id', async(req, res, next) => {
             zipcode: zipcode,
             city: city
         }, { new: true });
+
+        _auth = await Auth.findOneAndUpdate({ userid: id }, {
+            password: hashedPassword
+        })
+
         return res.send(_user);
     } catch (e) {
         return res.status(400).send("Something went wrong ");
@@ -175,6 +186,8 @@ router.delete('/delete-user/:id', async(req, res, next) => {
 
         const user = await User.findByIdAndRemove(id);
         if (!user) return res.status(400).send({ message: "User do not exists" });
+
+        _auth = await Auth.findOneAndDelete({ userid: id })
         return res.status(204).send('User Deleted');
     } catch (e) {
         return res.status(400).send({ message: 'Something went wrong' });
