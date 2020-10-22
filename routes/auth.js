@@ -4,6 +4,11 @@ const { User, validate } = require('../models/User');
 const { Auth } = require('../models/Auth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sgMail = require('@sendgrid/mail');
+const e = require('express');
+
+// const baseUrl = "http://localhost:8080";
+const baseUrl = "https://lipro-frontend-hassan.herokuapp.com";
 
 
 router.get('/users', async(req, res, next) => {
@@ -193,53 +198,83 @@ router.delete('/delete-user/:id', async(req, res, next) => {
         return res.status(400).send({ message: 'Something went wrong' });
     }
 });
-// router.post('/resetusername', async (req, res, next) => {
-// 	const { _id ,username } = req.body;
 
-// 	try{
-// 		let auth = await Auth.findOne({ username });
-// 		if(auth) return res.status(409).send("This name already exists");
+router.post('/forget-password', async (req, res, next) => {
+    const { mail } = req.body;
 
-// 		auth = await Auth.findByIdAndUpdate( _id, { username }, { new: true });
+    let user = await User.findOne({mail})
+    if (!user) return res.status(404).send({message: "User do not exists"});
+    
+    let currentTime = new Date();
+    
+    let data = {
+        userId: user._id,
+        resetPassword: true,
+        expiresIn: new Date(currentTime.getTime() + 900000)
+    }
+    
+    const token = jwt.sign({ data }, 'jwtPrivateKey');
+    sgMail.setApiKey('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')
 
-// 		return res.status(200).send("The username was updated")
+    let link = `${baseUrl}/forget-password?token=${token}`
 
-// 	}catch(e){
+    const msg = {
+        to: mail, // Change to your recipient
+        from: 'muhammad.hassan@phaedrasolutions.com', // Change to your verified sender
+        subject: 'Forgot Password',
+        text: `Please find the link to reset you password, Code will expire in 15 minutes`,
+        html: `<a>${link}</a>`,
+    }
 
-// 	}
-// });
+    sgMail
+        .send(msg)
+            .then((res) => {
+                console.log('Email sent', res)
+            }
+        )
+        .catch((error) => {
+            console.error(error.response.body)
+        }
+    )
 
-// router.post('/resetpassword',  async (req, res, next) => {
-// 	const { username, password } = req.body;
-// 	let hashedPassword;
-// 	console.log(req.body);
+    return res.status(200).send({ message: 'Please Check Link has been sent to your Email Address' })
 
-// 	try{
-// 		let auth = await Auth.findOne({ username });
-// 		if(!auth) return res.status(404).send("Invalid username");;
+})
 
-// 		const salt = await bcrypt.genSalt(10);
-// 		hashedPassword = await bcrypt.hash(password, salt);
-// 		if (!hashedPassword) return res.status(400).send("Could not hash the password");
+router.post('/reset-password', async(req, res, next) => {
+    const { password, token } = req.body;
 
-// 		auth = await Auth.findByIdAndUpdate(auth._id, { password: hashedPassword } , { new: true });
-// 		return res.status(200).send("Password successfully updated");
-// 	} catch(e){
-// 		return res.status(403).send("Something went wrong");
-// 	}
+    try{
+        const decodedToken = jwt.verify(token, 'jwtPrivateKey');
 
-// });
+        if(decodedToken.data && !decodedToken.data.resetPassword) return res.status(403).send({message: 'Invalid Token'});
+        if(decodedToken.data && decodedToken.data.expiresIn) {
+            let currentTime = (new Date()).getTime()
+            let expireTime = (new Date(decodedToken.data.expiresIn)).getTime()
 
+            if(currentTime > expireTime){
+                return res.status(400).send({message: 'Token Expired'});
+            }
 
+            if(decodedToken.data && decodedToken.data.userId) {
+                const salt = await bcrypt.genSalt(10);
+                hashedPassword = await bcrypt.hash(password, salt);
 
-// router.post('/getUsername', async (req, res, next) => {
-// 	const { user_id } = req.body;
+                _auth = await Auth.findOneAndUpdate({ userid: decodedToken.data.userId }, {
+                    password: hashedPassword
+                });
 
-// 	const auth = await Auth.findOne({ user_id });
-// 	if(!auth) return res.status(404).send("Invalid username");
+                
+                return res.status(200).send({message: "Your password has been successfully updated"})
+            }
+        } else { 
+            return res.status(403).send({message: 'Invalid Token'});
+        }
+    } catch (e){
+        return res.status(500).send({message: "Invalid Token"})
+    }
 
-// 	return res.send(auth.username);
-// });
-
+    
+})
 
 module.exports = router;

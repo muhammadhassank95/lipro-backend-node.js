@@ -3,7 +3,7 @@ const router = express.Router();
 const { Country, validate } = require('../models/Country');
 
 /* Get Country*/
-router.get('/', async (req, res, next) => {
+router.get('/', async(req, res, next) => {
     try {
         let country_list = await Country.find();
 
@@ -12,11 +12,11 @@ router.get('/', async (req, res, next) => {
             var nameB = b.country.toUpperCase();
 
             if (nameA < nameB) {
-              return -1;
+                return -1;
             }
 
             if (nameA > nameB) {
-              return 1;
+                return 1;
             }
 
             return 0;
@@ -29,7 +29,7 @@ router.get('/', async (req, res, next) => {
 });
 
 /* Create New Country */
-router.post('/add-new-country', async (req, res, next) => {
+router.post('/add-new-country', async(req, res, next) => {
     try {
         const { error } = validate(req.body);
         if (error) return res.status(403).send(error.details[0]);
@@ -38,14 +38,13 @@ router.post('/add-new-country', async (req, res, next) => {
         country = Country(req.body);
         await country.save();
         return res.status(201).send({ country: country, message: "Country Added Successfull" });
-    }
-    catch (e) {
+    } catch (e) {
         return res.status(500).send({ message: 'Something went wrong' });
     }
 });
 
 /*UPDATE Country */
-router.put('/update-country/:id', async (req, res, next) => {
+router.put('/update-country/:id', async(req, res, next) => {
     try {
         const { id } = req.params;
         const { country } = req.body;
@@ -67,7 +66,7 @@ router.put('/update-country/:id', async (req, res, next) => {
 
 
 /* Delete Country*/
-router.delete('/delete-country/:id', async (req, res, next) => {
+router.delete('/delete-country/:id', async(req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -80,7 +79,7 @@ router.delete('/delete-country/:id', async (req, res, next) => {
 });
 
 /* Search Country*/
-router.get('/search-country/:query', async (req, res, next) => {
+router.get('/search-country/:query', async(req, res, next) => {
 
     try {
         const country = await Country.fuzzySearch({ query: req.params.query });
@@ -89,4 +88,5 @@ router.get('/search-country/:query', async (req, res, next) => {
         return res.status(500).send(e.message);
     }
 });
+
 module.exports = router;
