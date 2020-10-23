@@ -151,7 +151,7 @@ router.put('/update-user/:id', async(req, res, next) => {
 
         if (_user.mail != mail) {
             let c = await User.find({ mail: mail });
-            if (c.length) return res.status(409).send({ message: "User with this name already exists" });
+            if (c.length) return res.status(409).send({ message: "User with this Email already exists" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -172,7 +172,8 @@ router.put('/update-user/:id', async(req, res, next) => {
             consultantfunctionid: consultantfunctionid,
             street: street,
             zipcode: zipcode,
-            city: city
+            city: city,
+            mail: mail,
         }, { new: true });
 
         _auth = await Auth.findOneAndUpdate({ userid: id }, {
@@ -203,7 +204,7 @@ router.post('/forget-password', async (req, res, next) => {
     const { mail } = req.body;
 
     let user = await User.findOne({mail})
-    if (!user) return res.status(404).send({message: "User do not exists"});
+    if (!user) return res.status(404).send({message: "User with this Email Id does not exists"});
     
     let currentTime = new Date();
     
@@ -222,8 +223,8 @@ router.post('/forget-password', async (req, res, next) => {
         to: mail, // Change to your recipient
         from: 'muhammad.hassan@phaedrasolutions.com', // Change to your verified sender
         subject: 'Forgot Password',
-        text: `Please find the link to reset you password, Code will expire in 15 minutes`,
-        html: `<a>${link}</a>`,
+        text: 'Please find the link to reset you password, link will expire in 15 minutes',
+        html: `<a href="${link}">Click Here to change your Password.</a>`,
     }
 
     sgMail
