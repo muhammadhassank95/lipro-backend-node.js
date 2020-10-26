@@ -274,8 +274,17 @@ router.post('/reset-password', async(req, res, next) => {
     } catch (e){
         return res.status(500).send({message: "Invalid Token"})
     }
-
-    
 })
+
+/* Search User*/
+router.get('/search-user/:query', async(req, res, next) => {
+    try {
+        const user = await Auth.find({ loginname: { "$regex": req.params.query, "$options": "i" } });
+        return res.status(200).send(user);
+    } catch (e) {
+        console.log(e)
+        return res.status(500).send(e.message);
+    }
+});
 
 module.exports = router;

@@ -89,4 +89,5 @@ router.get('/search-branch/:query', async(req, res, next) => {
         return res.status(500).send(e.message);
     }
 });
+
 module.exports = router;
