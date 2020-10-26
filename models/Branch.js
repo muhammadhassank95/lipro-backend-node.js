@@ -1,18 +1,14 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
-const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
 Joi.objectId = require('joi-objectid')(Joi);
 
-const branchSchema = new mongoose.Schema({
+const Branch = mongoose.model('branches', mongoose.Schema({
     branch: {
         type: String,
         maxlength: 40
     },
-});
-
-branchSchema.plugin(mongoose_fuzzy_searching, { fields: ["branch"] });
-const Branch = mongoose.model('branches', branchSchema);
+}));
 
 function validateBranch(branch) {
     const schema = {

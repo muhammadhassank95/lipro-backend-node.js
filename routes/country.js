@@ -50,7 +50,6 @@ router.put('/update-country/:id', async(req, res, next) => {
         const { country } = req.body;
         const { error } = validate(req.body);
         if (error) return res.status(400).send(error.details[0]);
-        // let item = await MenuItem.findById(_id);
         let _country = await Country.findById(id);
         if (!_country) return res.status(404).send("No item found");
 
@@ -82,8 +81,6 @@ router.delete('/delete-country/:id', async(req, res, next) => {
 router.get('/search-country/:query', async(req, res, next) => {
 
     try {
-        // const country = await Country.fuzzySearch({ query: req.params.query });
-
         const country = await Country.find({ country: { "$regex": req.params.query, "$options": "i" } });
 
         return res.status(200).send(country);
