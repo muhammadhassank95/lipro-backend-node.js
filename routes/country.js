@@ -82,7 +82,10 @@ router.delete('/delete-country/:id', async(req, res, next) => {
 router.get('/search-country/:query', async(req, res, next) => {
 
     try {
-        const country = await Country.fuzzySearch({ query: req.params.query });
+        // const country = await Country.fuzzySearch({ query: req.params.query });
+
+        const country = await Country.find({ country: { "$regex": req.params.query, "$options": "i" } });
+
         return res.status(200).send(country);
     } catch (e) {
         return res.status(500).send(e.message);

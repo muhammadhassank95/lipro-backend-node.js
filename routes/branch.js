@@ -39,8 +39,6 @@ router.post('/add-new-branch', async(req, res, next) => {
         await branch.save();
         return res.status(201).send({ branch: branch, message: "Branch Added Successfull" });
     } catch (e) {
-        console.log(e)
-
         return res.status(500).send({ message: 'Something went wrong' });
     }
 });
@@ -84,7 +82,8 @@ router.delete('/delete-branch/:id', async(req, res, next) => {
 router.get('/search-branch/:query', async(req, res, next) => {
 
     try {
-        const branch = await Branch.fuzzySearch({ query: req.params.query });
+        // const branch = await Branch.fuzzySearch({ query: req.params.query });
+        const branch = await Branch.find({ branch: { "$regex": req.params.query, "$options": "i" } });
         return res.status(200).send(branch);
     } catch (e) {
         return res.status(500).send(e.message);

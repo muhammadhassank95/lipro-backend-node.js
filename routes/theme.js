@@ -36,11 +36,9 @@ router.post('/add-new-theme', async(req, res, next) => {
 
         let theme = await Theme.find({ theme: req.body.theme });
         if (theme.length) return res.status(409).send({ message: "Theme Already exsists" });
-        console.log('theme:', theme, req.body)
         theme = Theme(req.body);
 
         await theme.save();
-        console.log('theme11:', theme)
 
         return res.status(201).send({ theme: theme, message: "Theme Added Successfull" });
     } catch (e) {
@@ -87,7 +85,9 @@ router.delete('/delete-theme/:id', async(req, res, next) => {
 router.get('/search-theme/:query', async(req, res, next) => {
 
     try {
-        const theme = await Theme.fuzzySearch({ query: req.params.query });
+        // const theme = await Theme.fuzzySearch({ query: req.params.query });
+        const theme = await Theme.find({ theme: { "$regex": req.params.query, "$options": "i" } });
+
         return res.status(200).send(theme);
     } catch (e) {
         return res.status(500).send(e.message);
