@@ -21,4 +21,18 @@ const System = mongoose.model('systems', new mongoose.Schema({
     },
 }));
 
+function validateSystemSettings(classification) {
+    const schema = {
+        lastarchiving: Joi.date().required(),
+        hoursperday: Joi.number().min(0).max(24).required(),
+        toleranceplaning: Joi.number().min(-100).max(100).required(),
+        toleranceregistering: Joi.number().min(0).max(100).required(),
+        vatrate: Joi.number().min(0).max(100).required(),
+        _id: Joi.objectId(),
+    };
+
+    return Joi.validate(classification, schema);
+}
+
 exports.System = System;
+exports.validate = validateSystemSettings;

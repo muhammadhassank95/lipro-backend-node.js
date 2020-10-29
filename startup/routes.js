@@ -51,7 +51,7 @@ module.exports = function (app) {
         app.use('/api/projectTime', projectTime),
         app.use('/api/projectYear', projectYear),
         app.use('/api/publicHoliday', publicHoliday),
-        app.use('/api/system', system),
+        app.use('/api/system-settings', system),
         app.use('/api/theme', theme),
         app.use('/api/userCategory', userCategory),
         app.use('/api/auth', auth)
